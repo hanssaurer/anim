@@ -40,7 +40,20 @@ $(document).ready(function(e) {
 			appendScript(anim.type);
 		});
     }).done(function() {	   
-		var mySequence = new seqPlayer(sequences[1].animations);
+	
+jQuery.each(sequences, function (i,seq) {
+
+console.log ("Init sequence: " + i);	
+
+	if (seq.element) {
+		jQuery(seq.element).on(seq.event, function() {
+			seq.player = new seqPlayer(seq.animations);
+		})
+	} else {
+		seq.player = new seqPlayer(seq.animations);
+	}
+})
+
 	}).fail(function(){
         console.log('error');
     });
@@ -127,16 +140,8 @@ function seqPlayer(animations) {
 }
 
 
-if  (sequences[1].event == "ready") {
-    var myAnim = new seqPlayer(sequences[0].animations);
-} else {
-     jQuery(sequences[1].element).on( sequences[1].event, function() {
-	   var mySequence = new seqPlayer(sequences[1].animations);
-	   //alert("click");
-     });  
-}
 
-	
+
 
 });
 
