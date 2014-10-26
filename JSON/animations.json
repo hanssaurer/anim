@@ -1,0 +1,8 @@
+ {
+   "t7flip":     {"type": "flip",      "selector": "#t7", "step": 1, "interval": 10},
+   "t7flipBack": {"type": "flipBack",  "selector": "#t7",  "step": 1, "interval": 20},
+   "t3rotate":   {"type": "rotate",    "selector": "#t3", "from": {"deg": 0}, "to":{"deg":360}, "current":{"deg":0}, "step": 1, "interval": 20},
+   "t5rotate":   {"type": "rotate",    "selector": "#t5", "from": {"deg": 90}, "to":{"deg":180}, "current":{"deg":90}, "step": 1, "interval": 30},
+   "t2rotate":   {"type": "rotate",    "selector": "#t2", "from": {"deg": 90}, "to":{"deg":180}, "current":{"deg":90}, "step": 1, "interval": 20},
+   "t2rotateback":   {"type": "rotate",    "selector": "#t2", "from": {"deg": 180}, "to":{"deg":360}, "current":{"deg":180}, "step": 1, "interval": 10}
+ }

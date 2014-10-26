@@ -1,0 +1,180 @@
+<html>                                                                  
+<head>                                                                  
+
+<link rel="stylesheet" href="../j33/templates/ttc14/css/bootstrap.css" type="text/css">
+<link rel="stylesheet" href="../j33/templates/ttc14/css/responsive.css" type="text/css">
+
+  <script src="../j33/media/jui/js/jquery.min.js" type="text/javascript"></script>
+  <script src="../j33/media/jui/js/jquery-noconflict.js" type="text/javascript"></script>
+  <script src="../j33/media/jui/js/jquery-migrate.min.js" type="text/javascript"></script>
+  <script src="../j33/media/system/js/caption.js" type="text/javascript"></script>
+  <script src="../j33/media/jui/js/jquery.js" type="text/javascript"></script>
+  <script src="../j33/templates/ttc14/js/bootstrap.js" type="text/javascript"></script>
+
+
+<script type = "text/javascript">
+
+var ani = {}; 		//Namespace
+ani.def = [];
+
+$(document).ready(function(e) {
+
+	function appendScript(type) {
+	  if (typeof(window["ani"][type]) != "function") {
+		var script = document.createElement('script');
+		script.type = "text/javascript";
+		script.src = "ani" + type + ".js";
+		//document.body.appendChild(script); //head or body, doesn't matter
+		//jQuery("head").promise().done(function(){var mySequence = new seqPlayer(sequences[1].animations);});
+		jQuery("head").append(script);
+	  } 
+	}
+	
+	//Read animations as JSON
+    jQuery.getJSON('JSON/animations.json',function(animations){
+        console.log('success');
+		//animations contains named objects
+        jQuery.each(animations,function(name,anim){
+			console.log("animation:" + name + "type: " + anim.type);
+			ani.def[name] = anim;
+			appendScript(anim.type);
+		});
+    }).done(function() {	   
+		var mySequence = new seqPlayer(sequences[1].animations);
+	}).fail(function(){
+        console.log('error');
+    });
+
+	
+	
+	
+// Sequences can have multiple animations
+// Müssen auch noch gelesen werden
+var sequences = [];
+  sequences.push({"event":"ready", "animations":["t7flip", "t3rotate"]});
+  sequences.push({"event":"click","element":"#t1", "animations":["t7flip","t7flipBack","t5rotate"]});
+ // sequence.push(["t7flipBack"]);
+
+
+//  "logoRotate": {"type": "move",     "selector": "img:eq(0)","from": {y:"out"}, "to":{dest: "origin"}, "step": 2, "interval": 40},
+//  "rotatet3":   {"type": "rotate",    "selector": "#t3", "from": {deg: 0}, "to":{deg:360}, current:{deg:0}, "step": 1, "interval": 20},
+//  "scaleLogoDown":  {"type": "scale",    "selector": "img:eq(0)", "from": {x:2,y:2}, "to":{x:0, y:0}, "step": 0.05, "interval": 50},
+//  "scaleLogoUp":  {"type": "scale",    "selector": "img:eq(0)", "from": {x:0,y:0}, "to":{x:1, y:1}, "step": 0.05, "interval": 50},
+
+	
+	
+	
+	function AnimPlayer(def, sequence) {
+		
+		var seq = sequence;
+		
+		var checkDone = function(e) {
+			console.log("checkDone called animation, timer: ", def.type,",", timer);
+			if (e.state = "done") {
+				console.log("cleared")
+				clearInterval(timer);
+				jQuery(window).off('animationStateChanged');
+				seq.playNext();
+			}
+		}
+		
+		//
+		var player = new window["ani"][def.type]();
+		player.start(def);
+		console.log("anmimation started!");
+		
+        var timer=window.setInterval(function(){player.play(def)}, def.interval);
+
+		jQuery(window).on('animationStateChanged', checkDone);
+		
+	}
+
+	//animPlayer1 = new AnimPlayer(ani.def["t7flip"]);
+	//animPlayer2 = new AnimPlayer(ani.def["t3rotate"]);
+	//animPlayer3 = new AnimPlayer(ani.def["t5rotate"]);
+	//animPlayer4 = new AnimPlayer(ani.def["t2rotate"]);
+
+
+
+function seqPlayer(animations) {
+  //Ist das persistent?
+  var mySequence = animations;
+  var animationNr;
+  var animPlayer;
+
+	this.playNext = function() {
+	    //The animations do have names, but the player traverses by index
+		if (typeof animationNr === 'undefined') {
+			animationNr = 0; 
+		} else {
+			animationNr = animationNr + 1; 
+		}
+		
+		if (animationNr < mySequence.length) {
+			this.play();
+		} else {
+			console.log("Sequence beemdet");
+		}
+	};
+
+    this.play = function() {
+		animplayer = new AnimPlayer(ani.def[mySequence[animationNr]], this);
+    };
+
+    this.playNext();
+	console.log("Sequence: " + animationNr + " started");
+
+}
+
+
+if  (sequences[1].event == "ready") {
+    var myAnim = new seqPlayer(sequences[0].animations);
+} else {
+     jQuery(sequences[1].element).on( sequences[1].event, function() {
+	   var mySequence = new seqPlayer(sequences[1].animations);
+	   //alert("click");
+     });  
+}
+
+	
+
+});
+
+</script>
+
+</head>                                                                 
+
+<body>          
+	<div id="ball" style="position: absolute; left: 50px; top: 30px; opacity: 0.5;"><img src="/j33/images/ball_145x145.png" alt="" border="0" /></div>
+    <!-- main container -->
+    <div class='container'>
+        <!-- header -->
+        <div class='row'>
+			<div class="custom span12"  style="background-image: url('/j33/images/TTPlatte940matt.png')" >
+				<div id="t1" class="vermelho tile"> </div>
+				<div id="t2" class="azul tile" >
+					<p><span>Verein</span></p>
+				</div>
+				<div id="t3" class="amarelo largeTile" > </div>
+				<div id="t4" class="vermelho tile"> </div>
+				<div id="t5" class="azul tile"> </div>
+				<div id="t6" class="verde tile"> </div>
+
+				<!-- Flip -->
+				<div id="t7" class="amarelo  tile">
+					<div class="t-flip">
+						<div class="back"><img src="/j33/images/Vorstand_Dietmar180x234.jpg" /></div>
+						<div class="front">vorn</div>
+					</div>
+				</div>
+
+				<div id="t8" class="azul tile"> </div>
+				<div id="t9" class="verde tile"> </div></div>
+
+			</div>
+
+		</div>
+	</div>
+								
+</body>                                                                 
+</html>
