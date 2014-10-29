@@ -1,6 +1,8 @@
 //Flip - Object creation function
 
-    ani.flip = function () {
+    ani.flip = function (player) {
+	
+		var myPlayer = player;
 
 		this.start = function(anim)
 		{ 
@@ -13,7 +15,6 @@
 
 		this.play = function(anim)
 		{
-			//console.log("flip-elem: " + anim.selector );
 			if (anim.current.front < 90){
 				anim.current.front = anim.current.front + anim.step;
 				this.step(anim.selector + " .front", anim.current.front);
@@ -22,11 +23,8 @@
 					anim.current.back = anim.current.back + anim.step;
 					this.step(anim.selector + " .back", anim.current.back);
 				} else {
-					//anim.done = true
-					var evt = jQuery.Event('animationStateChanged');
-					evt.state = "done";
-					console.log("Flip-trigger!");
-					jQuery(window).trigger(evt);
+					console.log("Flip done!");
+					myPlayer.done();
 				}
 			}
 		}

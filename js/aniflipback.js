@@ -1,7 +1,9 @@
 //flipback - Object creation function
 
-    ani.flipBack = function () {
+    ani.flipBack = function (player) {
 
+		var myPlayer = player;
+	
 		this.start = function(anim)
 		{ 
 			this.step(anim.selector + " .front", 90);		
@@ -23,11 +25,8 @@
 					anim.current.front = anim.current.front - anim.step;
 					this.step(anim.selector + " .front", anim.current.front);
 				} else {
-					//anim.done = true
-					var evt = jQuery.Event('animationStateChanged');
-					evt.state = "done";
-					console.log("Flip-trigger!");
-					jQuery(window).trigger(evt);
+					console.log("Flipback done!");
+					myPlayer.done();
 				}
 			}
 		}

@@ -26,9 +26,9 @@ var sequences = [];
 
 
 	function prepareAnimations() {
-	//Prepares the Animations
-	//either by creating a Sequence Player
-	//or by providing an callback function
+	//Prepares the animations
+	//either by creating a sequence player
+	//or by providing an callback function that creates a  seequence player
 		jQuery.each(sequences, function (i,seq) {
 			console.log ("Init sequence: " + i);	
 			if (seq.element) {
@@ -48,61 +48,58 @@ var sequences = [];
 //  "scaleLogoUp":  {"type": "scale",    "selector": "img:eq(0)", "from": {x:0,y:0}, "to":{x:1, y:1}, "step": 0.05, "interval": 50},
 
 	
-	function AnimPlayer(def, sequence) {
+	function AnimPlayer(def, sequencePlayer) {
 		
-		var seq = sequence;
+		//var SP = sequencePlayer;
 		
-		var checkDone = function(e) {
-			console.log("checkDone called animation, timer: ", def.type,",", timer);
-			if (e.state = "done") {
-				console.log("cleared")
-				clearInterval(timer);
-				jQuery(window).off('animationStateChanged');
-				seq.playNext();
-			}
-		}
+		//def.type holds the name of the animation object 
+		//http://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
+		var animation = new window["ani"][def.type](sequencePlayer);
+		animation.start(def);
+		console.log("animation started!");
 		
-		//
-		var player = new window["ani"][def.type]();
-		player.start(def);
-		console.log("anmimation started!");
-		
-        var timer=window.setInterval(function(){player.play(def)}, def.interval);
+        this.timer=window.setInterval(function(){animation.play(def)}, def.interval);
 
-		jQuery(window).on('animationStateChanged', checkDone);
 		
 	}
 
 
-function seqPlayer(animations) {
-  //Ist das persistent?
-  var mySequence = animations;
-  var animationNr;
-  var animPlayer;
+	function seqPlayer(animations) {
+	  //Ist das persistent?
+	  var mySequence = animations;
+	  var animationNr;
+	  var animPlayer;
 
-	this.playNext = function() {
-	    //The animations do have names, but the player traverses by index
-		if (typeof animationNr === 'undefined') {
-			animationNr = 0; 
-		} else {
-			animationNr = animationNr + 1; 
-		}
+		this.playNext = function() {
+			//The animations do have names, but the player traverses by index
+			if (typeof animationNr === 'undefined') {
+				animationNr = 0; 
+			} else {
+				animationNr = animationNr + 1; 
+			}
+			
+			if (animationNr < mySequence.length) {
+				this.play();
+			} else {
+				console.log("Sequence beemdet");
+			}
+		};
+
+		this.play = function() {
+			animPlayer = new AnimPlayer(ani.def[mySequence[animationNr]], this);
+		};
 		
-		if (animationNr < mySequence.length) {
-			this.play();
-		} else {
-			console.log("Sequence beemdet");
+		this.done  = function() {
+		//animation is finished - play next animation, if there is next
+			clearInterval(animPlayer.timer);
+			animPlayer.timer
+			this.playNext();
 		}
-	};
 
-    this.play = function() {
-		animplayer = new AnimPlayer(ani.def[mySequence[animationNr]], this);
-    };
+		this.playNext();
+		console.log("Sequence: " + animationNr + " started");
 
-    this.playNext();
-	console.log("Sequence: " + animationNr + " started");
-
-}
+	}
 
 
 

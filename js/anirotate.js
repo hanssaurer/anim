@@ -1,7 +1,9 @@
 //Rotation - Object creation function
 
-    ani.rotate = function () {
+    ani.rotate = function (player) {
 
+		var myPlayer = player;
+		
 		this.start = function(anim)
 		{ 
 			this.step(anim, anim.from.deg);		
@@ -10,18 +12,13 @@
 
 		this.play = function(anim)
 		{
-		//console.log("rotate-elem: " + anim.to.deg );
 			if (anim.current.deg < anim.to.deg){
 				anim.current.deg = anim.current.deg + anim.step;
 				this.step(anim, anim.current.deg)
 			} else {
 
-			anim.done = true
-    var evt = jQuery.Event('animationStateChanged');
-    evt.state = "rotate";
- 	console.log("Rotate-trigger!");
-   jQuery(window).trigger(evt);
-
+				myPlayer.done();
+				console.log("Rotate done!");
 			}
 		}
 
